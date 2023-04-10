@@ -8,7 +8,7 @@ function AddNote() {
   const [state, setState] = useState({
     title: "",
     description: "",
-    tag: "Default",
+    tag: "",
   });
 
   const handleOnChange = (e) => {
@@ -18,6 +18,7 @@ function AddNote() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addNote(state.title, state.description, state.tag);
+    setState({ title: "", description: "", tag: "" });
   };
   return (
     <>
@@ -33,6 +34,8 @@ function AddNote() {
             id="title-field"
             name="title"
             onChange={handleOnChange}
+            value={state.title}
+            placeholder="Enter title here"
           />
         </div>
         <div className="mb-3">
@@ -43,7 +46,23 @@ function AddNote() {
             className="form-control"
             id="decription-field"
             name="description"
-            onChange={handleOnChange}></textarea>
+            onChange={handleOnChange}
+            value={state.description}
+            placeholder="Enter description here"></textarea>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="tag-field" className="form-label">
+            Tag
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="tag-field"
+            name="tag"
+            onChange={handleOnChange}
+            value={state.tag}
+            placeholder="Enter tag here"
+          />
         </div>
         <button
           type="submit"
