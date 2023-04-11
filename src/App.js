@@ -2,7 +2,6 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./component/Navbar";
 import Home from "./component/Home";
-import About from "./component/About";
 import NoteState from "./context/notes/NoteState";
 import Alert from "./component/Alert";
 import Login from "./component/Login";
@@ -25,15 +24,6 @@ function App() {
                 path="/"
                 element={
                   <Home
-                    setAlertData={setAlertData}
-                    setShowAlert={setShowAlert}
-                  />
-                }></Route>
-              <Route
-                exact
-                path="/about"
-                element={
-                  <About
                     setAlertData={setAlertData}
                     setShowAlert={setShowAlert}
                   />

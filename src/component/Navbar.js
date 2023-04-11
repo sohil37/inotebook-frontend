@@ -38,15 +38,6 @@ function Navbar() {
                 Home
               </Link>
             </li>
-            <li className="nav-item">
-              <Link
-                className={`nav-link ${
-                  location.pathname === "/about" ? "active" : ""
-                }`}
-                to="/About">
-                About
-              </Link>
-            </li>
           </ul>
           {!localStorage.getItem("authToken") ? (
             <>
