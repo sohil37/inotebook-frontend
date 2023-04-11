@@ -8,69 +8,94 @@ const NoteState = (props) => {
 
   //   fetch notes
   const fetchNotes = async () => {
-    const response = await fetch(`${host}/api/note/fetchAllNotes`, {
-      method: "GET",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
-      },
-    });
-    const fetchedNotes = await response.json();
-    if (fetchedNotes.success === true) {
-      setNotes(fetchedNotes.notes);
-    } else {
-      console.error("error occurred in fetchNotes API call");
+    try {
+      const response = await fetch(`${host}/api/note/fetchAllNotes`, {
+        method: "GET",
+        headers: {
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
+        },
+      });
+      const fetchedNotes = await response.json();
+      if (fetchedNotes.success === true) {
+        setNotes(fetchedNotes.notes);
+        return true;
+      } else {
+        console.error("error occurred in fetchNotes API call");
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
     }
   };
 
   //   add note
   const addNote = async (title, description, tag) => {
-    await fetch(`${host}/api/note/addNote`, {
-      method: "POST",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title, description, tag }),
-    });
-    fetchNotes();
+    try {
+      await fetch(`${host}/api/note/addNote`, {
+        method: "POST",
+        headers: {
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, description, tag }),
+      });
+      fetchNotes();
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   };
 
   // delete note
   const deleteNote = async (id) => {
-    await fetch(`${host}/api/note/deleteNote/${id}`, {
-      method: "DELETE",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
-      },
-    });
-    fetchNotes();
+    try {
+      await fetch(`${host}/api/note/deleteNote/${id}`, {
+        method: "DELETE",
+        headers: {
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
+        },
+      });
+      fetchNotes();
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   };
 
   // update note
   const updateNote = async (id, title, description, tag) => {
-    let newNote = {};
-    if (title) {
-      newNote.title = title;
+    try {
+      let newNote = {};
+      if (title) {
+        newNote.title = title;
+      }
+      if (description) {
+        newNote.description = description;
+      }
+      if (tag) {
+        newNote.tag = tag;
+      }
+      await fetch(`${host}/api/note/updateNote/${id}`, {
+        method: "PUT",
+        headers: {
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newNote),
+      });
+      fetchNotes();
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
     }
-    if (description) {
-      newNote.description = description;
-    }
-    if (tag) {
-      newNote.tag = tag;
-    }
-    await fetch(`${host}/api/note/updateNote/${id}`, {
-      method: "PUT",
-      headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQzMTUyYWFiNzA3YjU1ZTg3ODJkMjA3In0sImlhdCI6MTY4MDk1NDAzMX0.3XjnH-4UZrAJpK_IO3dhhqEQDmNEPzDL3tQUDdUkX5s",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNote),
-    });
-    fetchNotes();
   };
 
   return (

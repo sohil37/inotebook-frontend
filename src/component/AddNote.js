@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import noteContext from "../context/notes/NoteContext";
 
-function AddNote() {
+function AddNote(props) {
   const context = useContext(noteContext);
+  const { setAlertData, setShowAlert } = props;
 
   const { addNote } = context;
   const [state, setState] = useState({
@@ -15,10 +16,31 @@ function AddNote() {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addNote(state.title, state.description, state.tag);
+    const success = await addNote(state.title, state.description, state.tag);
     setState({ title: "", description: "", tag: "" });
+    if (success) {
+      setAlertData({
+        type: "success",
+        title: "Success",
+        message: "Note added successfully.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } else {
+      setAlertData({
+        type: "danger",
+        title: "Error",
+        message: "Unable to add note.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
   };
   return (
     <>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Signup() {
+function Signup(props) {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -9,34 +9,71 @@ function Signup() {
     cpassword: "",
   });
   const navigate = useNavigate();
+  const { setAlertData, setShowAlert } = props;
 
   const handleOnChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { name, email, password, cpassword } = credentials;
-    if (password === cpassword) {
-      const response = await fetch(
-        `http://localhost:5000/api/auth/createUser`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, email, password }),
+    try {
+      e.preventDefault();
+      const { name, email, password, cpassword } = credentials;
+      if (password === cpassword) {
+        const response = await fetch(
+          `http://localhost:5000/api/auth/createUser`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, email, password }),
+          }
+        );
+        const responseJSON = await response.json();
+        if (responseJSON.success === true) {
+          navigate("/login");
+          setAlertData({
+            type: "success",
+            title: "Success",
+            message: "Registered successfully.",
+          });
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+        } else {
+          setAlertData({
+            type: "danger",
+            title: "Error",
+            message: "Unable to register, internal server error.",
+          });
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
         }
-      );
-      const responseJSON = await response.json();
-      if (responseJSON.success === true) {
-        alert("Registration successful.");
-        navigate("/login");
       } else {
-        alert("Unable to register, internal server error.");
+        setAlertData({
+          type: "danger",
+          title: "Error",
+          message: "Password and Confirm Password is different.",
+        });
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
       }
-    } else {
-      alert("Password and Confirm Password is different");
+    } catch (err) {
+      setAlertData({
+        type: "danger",
+        title: "Error",
+        message: "Unable to register. Please try after sometime.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
     }
   };
 

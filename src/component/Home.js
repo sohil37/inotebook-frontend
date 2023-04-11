@@ -2,11 +2,17 @@ import React from "react";
 import Notes from "./Notes";
 import AddNote from "./AddNote";
 
-function Home() {
+function Home(props) {
   return (
     <div>
-      <AddNote />
-      <Notes />
+      <AddNote
+        setAlertData={props.setAlertData}
+        setShowAlert={props.setShowAlert}
+      />
+      <Notes
+        setAlertData={props.setAlertData}
+        setShowAlert={props.setShowAlert}
+      />
     </div>
   );
 }

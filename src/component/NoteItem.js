@@ -4,6 +4,32 @@ import noteContext from "../context/notes/NoteContext";
 function NoteItem(props) {
   const context = useContext(noteContext);
   const { deleteNote } = context;
+  const { setAlertData, setShowAlert } = props;
+
+  const onClickDeleteNote = async (id) => {
+    const success = await deleteNote(id);
+    if (success) {
+      setAlertData({
+        type: "success",
+        title: "Success",
+        message: "Note deleted successfully.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } else {
+      setAlertData({
+        type: "danger",
+        title: "Error",
+        message: "Unable to delete note.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
+  };
 
   return (
     <div className="col-md-3 my-3">
@@ -15,7 +41,7 @@ function NoteItem(props) {
             <i
               className="fa-solid fa-trash mx-2"
               onClick={() => {
-                deleteNote(props.note._id);
+                onClickDeleteNote(props.note._id);
               }}></i>
             <i
               className="fa-sharp fa-solid fa-pen-to-square mx-2"

@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/NoteContext";
 import NoteItem from "./NoteItem";
 import { useNavigate } from "react-router-dom";
-function Notes() {
+function Notes(props) {
   const context = useContext(noteContext);
   const { notes, updateNote, fetchNotes } = context;
   const navigate = useNavigate();
+  const { setAlertData, setShowAlert } = props;
   const [editNoteState, setEditNoteState] = useState({
     title: "",
     description: "",
@@ -21,11 +22,25 @@ function Notes() {
   const closeNoteModal = useRef();
 
   useEffect(() => {
-    if (localStorage.getItem("authToken")) {
-      fetchNotes();
-    } else {
-      navigate("/login");
-    }
+    const dummyFunction = async () => {
+      if (localStorage.getItem("authToken")) {
+        const success = await fetchNotes();
+        if (!success) {
+          setAlertData({
+            type: "danger",
+            title: "Error",
+            message: "Unable to fetch notes.",
+          });
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 3000);
+        }
+      } else {
+        navigate("/login");
+      }
+    };
+    dummyFunction();
     // eslint-disable-next-line
   }, []);
 
@@ -39,14 +54,35 @@ function Notes() {
     });
   };
 
-  const handleUpdate = () => {
-    updateNote(
+  const handleUpdate = async () => {
+    const success = await updateNote(
       editNoteState.id,
       editNoteState.title,
       editNoteState.description,
       editNoteState.tag
     );
     closeNoteModal.current.click();
+    if (success) {
+      setAlertData({
+        type: "success",
+        title: "Success",
+        message: "Note updated successfully.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } else {
+      setAlertData({
+        type: "danger",
+        title: "Error",
+        message: "Unable to update note.",
+      });
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    }
   };
 
   return (
@@ -145,7 +181,13 @@ function Notes() {
         {notes.length > 0
           ? notes.map((note) => {
               return (
-                <NoteItem key={note._id} note={note} handleEdit={handleEdit} />
+                <NoteItem
+                  key={note._id}
+                  note={note}
+                  handleEdit={handleEdit}
+                  setAlertData={setAlertData}
+                  setShowAlert={setShowAlert}
+                />
               );
             })
           : ""}
