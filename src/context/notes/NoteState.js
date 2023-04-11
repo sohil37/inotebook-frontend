@@ -16,7 +16,11 @@ const NoteState = (props) => {
       },
     });
     const fetchedNotes = await response.json();
-    setNotes(fetchedNotes);
+    if (fetchedNotes.success === true) {
+      setNotes(fetchedNotes.notes);
+    } else {
+      console.error("error occurred in fetchNotes API call");
+    }
   };
 
   //   add note
@@ -71,7 +75,13 @@ const NoteState = (props) => {
 
   return (
     <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, updateNote, fetchNotes }}>
+      value={{
+        notes,
+        addNote,
+        deleteNote,
+        updateNote,
+        fetchNotes,
+      }}>
       {props.children}
     </NoteContext.Provider>
   );

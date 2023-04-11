@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/NoteContext";
 import NoteItem from "./NoteItem";
+import { useNavigate } from "react-router-dom";
 function Notes() {
   const context = useContext(noteContext);
   const { notes, updateNote, fetchNotes } = context;
+  const navigate = useNavigate();
   const [editNoteState, setEditNoteState] = useState({
     title: "",
     description: "",
@@ -19,7 +21,11 @@ function Notes() {
   const closeNoteModal = useRef();
 
   useEffect(() => {
-    fetchNotes();
+    if (localStorage.getItem("authToken")) {
+      fetchNotes();
+    } else {
+      navigate("/login");
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -136,11 +142,13 @@ function Notes() {
         </div>
       </div>
       <div className="row">
-        {notes.map((note) => {
-          return (
-            <NoteItem key={note._id} note={note} handleEdit={handleEdit} />
-          );
-        })}
+        {notes.length > 0
+          ? notes.map((note) => {
+              return (
+                <NoteItem key={note._id} note={note} handleEdit={handleEdit} />
+              );
+            })
+          : ""}
       </div>
     </>
   );
